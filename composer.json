@@ -1,0 +1,30 @@
+{
+    "name": "bagisto/bagisto-ups-shipping",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Naresh Verma",
+            "email": "naresh.verma327@webkul.com"
+        },  {
+            "name": "Vivek Sharma",
+            "email": "viveksh047@webkul.com"
+        }
+    ],
+    "require": {
+        "konekt/concord": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webkul\\UpsShipping\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webkul\\UpsShipping\\Providers\\UpsShippingServiceProvider"
+            ],
+            "aliases": {}
+        }
+    },
+    "minimum-stability": "dev"
+}
