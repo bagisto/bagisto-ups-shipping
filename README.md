@@ -19,7 +19,13 @@ It packs in lots of demanding features that allows your business to scale in no 
 
 ### 3. Installation:
 
+* Run the following command
+~~~
+composer require bagisto/bagisto-ups-shipping
+~~~
+
 * Unzip the respective extension zip and then merge "packages" folders into project root directory.
+* Change the module name according to the providers like- (bagisto-ups-shipping) to (UpsShipping)
 * Goto config/app.php file and add following line under 'providers'
 
 ~~~
