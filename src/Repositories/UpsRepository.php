@@ -23,13 +23,18 @@ class UpsRepository
      *
      * @return mixed
      */
-    public function getSellerAdminData($cartItems) {
+    public function getSellerAdminData($cartItems) 
+    {
         $adminProducts = [];
-        foreach ($cartItems as $item) {
+
+        foreach ($cartItems as $item) 
+        {
             array_push($adminProducts, $item);
         }
+
         return $adminProducts;
     }
+
 
     /**
      * Get the Allowde Services
@@ -41,32 +46,37 @@ class UpsRepository
         $count = 0;
         $totalCount = count($allowedServices);
 
-        foreach ($allowedServices as $methods) {
-            if ( in_array($service, $methods) ) {
+        foreach ($allowedServices as $methods) 
+        {
+            if ( in_array($service, $methods) ) 
+            {
                 $count += 1;
             }
         }
-        if ( $count == $totalCount ) {
+        if ( $count == $totalCount ) 
+        {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
      * Get the Common Services for all the cartProduct
      * @param $allServices
      */
-    public function getAllowedMethods($allServices) {
+    public function getAllowedMethods($allServices) 
+    {
+        $allowedServices = explode(",", core()->getConfigData('sales.carriers.ups.ups_services'));
 
-        $allowedServices = explode(",", core()->getConfigData('sales.carriers.ups.services'));
-
-        foreach ($allServices as $services) {
+        foreach ($allServices as $services) 
+        {
             $allowedMethod =[];
-            foreach ($services as $service) {
-
-                foreach ($service as $serviceType =>$upsService) {
-                    if (in_array($serviceType , $allowedServices)) {
+            foreach ($services as $service) 
+            {
+                foreach ($service as $serviceType =>$upsService) 
+                {
+                    if (in_array($serviceType , $allowedServices)) 
+                    {
                         $allowedMethod[] = [
                             $serviceType => $upsService
                         ];
@@ -78,20 +88,20 @@ class UpsRepository
                 }
             }
 
-            if ($allowedMethod == null) {
+            if ($allowedMethod == null) 
+            {
                 continue;
-            } else {
-                $allowedMethods[] = $allowedMethod;
             }
+            $allowedMethods[] = $allowedMethod;
 
         }
 
-        if (isset($allowedMethods)) {
-
+        if (isset($allowedMethods)) 
+        {
             return $this->getCommonMethods($allowedMethods);
-        } else {
-            return false;
         }
+        return false;
+        
     }
 
 
@@ -102,11 +112,12 @@ class UpsRepository
      */
     public function getCommonMethods($methods)
     {
-        $avilableServicesArray  = []; 
-        $countMethods           = count($methods);
+        $countMethods = count($methods);
 
-        foreach ($methods as $fedexMethods) {
-            foreach ($fedexMethods as $key => $fedexMethod) {
+        foreach ($methods as $fedexMethods) 
+        {
+            foreach ($fedexMethods as $key => $fedexMethod) 
+            {
                 $avilableServicesArray[] = $key;
             }
         }
@@ -114,27 +125,30 @@ class UpsRepository
         $countServices = array_count_values($avilableServicesArray);
         $finalServices = [];
 
-        foreach ($countServices as $serviceType => $servicesCount) {
-
-            foreach ($methods as $fedexMethods) {
-                foreach ($fedexMethods as $type => $fedexMethod) {
-                    if ($serviceType == $type && $servicesCount == $countMethods) {
-
+        foreach ($countServices as $serviceType => $servicesCount) 
+        {
+            foreach ($methods as $fedexMethods) 
+            {
+                foreach ($fedexMethods as $type => $fedexMethod) 
+                {
+                    if ($serviceType == $type && $servicesCount == $countMethods) 
+                    {
                         $finalServices[$serviceType][] =$fedexMethod;
                     }
                 }
             }
 
-            if ($finalServices == null) {
+            if ($finalServices == null) 
+            {
                 continue;
             }
         }
 
-        if (!empty($finalServices)) {
-            return $finalServices;
-        } else {
+        if (empty($finalServices)) 
+        {
             return false;
         }
+        return $finalServices;
     }
 }
 

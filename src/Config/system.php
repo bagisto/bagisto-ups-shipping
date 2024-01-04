@@ -4,68 +4,74 @@ return [
     [
         'key'       => 'sales.carriers.ups',
         'name'      => 'ups::app.admin.system.ups',
-        'sort'      => 3,
+        'info'      => 'ups::app.admin.system.ups-description',
+        'sort'      => 4,
         'fields'    => [
             [
                 'name'          => 'title',
                 'title'         => 'ups::app.admin.system.title',
-                'type'          => 'depends',
-                'depend'        => 'active:1',
-                'validation'    => 'required_if:active,1',
-                'channel_based' => true,
+                'type'          => 'text',
+                'validation'    => 'required',
+                'channel_based' => false,
                 'locale_based'  => true
             ], [
                 'name'          => 'description',
                 'title'         => 'ups::app.admin.system.description',
                 'type'          => 'textarea',
-                'channel_based' => true,
+                'channel_based' => false,
                 'locale_based'  => true
             ], [
-                'name'          => 'active',
+                'name'          => 'ups_active',
                 'title'         => 'ups::app.admin.system.status',
                 'type'          => 'boolean',
-                'validation'    => 'required',
-                'channel_based' => true,
-                'locale_based'  => false
             ], [
-                'name'          => 'is_calculate_tax',
-                'title'         => 'admin::app.admin.system.calculate-tax',
-                'type'          => 'boolean',
+                'name'          => 'mode',
+                'title'         => 'ups::app.admin.system.mode',
+                'type'          => 'select',
                 'validation'    => 'required',
-                'channel_based' => true,
-                'locale_based'  => false,
+                'options'       => [
+                    [
+                        'title'     => 'Development',
+                        'value'     => 'DEVELOPMENT'
+                    ], [
+                        'title'     => 'Live',
+                        'value'     => "LIVE"
+                    ]
+                ],
             ], [
                 'name'          => 'access_license_key',
                 'title'         => 'ups::app.admin.system.access-license-number',
                 'type'          => 'text',
                 'validation'    => 'required',
-                'channel_based' => true,
-                'locale_based'  => false
+                'channel_based' => false,
+                'locale_based'  => true
             ], [
                 'name'          => 'user_id',
                 'title'         => 'ups::app.admin.system.user-id',
                 'type'          => 'text',
                 'validation'    => 'required',
-                'channel_based' => true,
-                'locale_based'  => false
+                'channel_based' => false,
+                'locale_based'  => true
             ], [
                 'name'          => 'password',
                 'title'         => 'ups::app.admin.system.password',
                 'type'          => 'password',
                 'validation'    => 'required',
-                'channel_based' => true,
-                'locale_based'  => false
-            ],  [
+                'channel_based' => false,
+                'locale_based'  => true
+            ], [
                 'name'          => 'shipper_number',
                 'title'         => 'ups::app.admin.system.shipper',
                 'type'          => 'text',
-                'channel_based' => true,
-                'locale_based'  => false
+                'channel_based' => false,
+                'locale_based'  => true
             ], [
                 'name'          => 'container',
                 'title'         => 'ups::app.admin.system.container',
                 'type'          => 'select',
                 'validation'    => 'required',
+                'channel_based' => false,
+                'locale_based'  => true,
                 'options'       => [
                     [
                         'title'     => 'Package',
@@ -82,15 +88,15 @@ return [
                     ], [
                         'title'     => 'UPS Express Box',
                         'value'     => '21'
-                    ]
+                    ],
                 ],
-                'channel_based' => true,
-                'locale_based'  => false
             ], [
                 'name'          => 'weight_unit',
                 'title'         => 'ups::app.admin.system.weight-unit',
                 'type'          => 'select',
                 'validation'    => 'required',
+                'channel_based' => false,
+                'locale_based'  => true,
                 'options'       => [
                     [
                         'title'     => 'LBS',
@@ -100,12 +106,12 @@ return [
                         'value'     => 'KGS',
                     ]
                 ],
-                'channel_based' => true,
-                'locale_based'  => false
             ], [
                 'name'          => 'services',
                 'title'         => 'ups::app.admin.system.allowed-methods',
                 'type'          => 'multiselect',
+                'channel_based' => false,
+                'locale_based'  => true,
                 'options'       => [
                     [
                         'title'     => 'Next Day Air Early AM',
@@ -143,9 +149,7 @@ return [
                     ],
 
                 ],
-                'channel_based' => true,
-                'locale_based'  => false
-            ]
+            ],
         ]
     ],
 ];

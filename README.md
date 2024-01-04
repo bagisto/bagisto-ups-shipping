@@ -1,39 +1,55 @@
-# Introduction
+### 1. Introduction:
 
-Bagisto UPS Shipping add-on provides UPS Shipping methods for shipping the product. By using this, you can provide UPS (United Parcel Service) shipping.
+UPS Shipping module provides UPS Shipping methods for shipping the product. By using this, you can provide UPS (United Parcel Service) shipping. UPS is widely acknowledged as a world-class company and now it is with the Bagisto.
+This module works with the Bagisto core Package. To use this module you must have installed Bagisto.
 
 It packs in lots of demanding features that allows your business to scale in no time:
 
-- The admin can enable or disable the UPS Shipping method.
+* The admin can enable or disable the UPS Shipping method.
 
-- The admin can set the UPS shipping method name that will be shown from the front side.
+* The admin can set the UPS shipping method name that will be shown from the front side.
 
-- The admin can define the allowed methods and weight units.
+* The admin can define the allowed methods and weight units.
 
-- Dynamic shipping method for freight calculation.
+* Dynamic shipping method for freight calculation.
 
-- Tax rate can be calculated based on UPS shipping
+### 2. Requirements:
 
-## Requirements:
+* **Bagisto**: v0.1.6 or higher.
 
-- **Bagisto**: v1.3.3
+### 3. Installation:
 
-## Installation :
-- Run the following command
-```
-composer require bagisto/bagisto-ups-shipping
-```
+* Unzip the respective extension zip and then merge "packages" folders into project root directory.
+* Goto config/app.php file and add following line under 'providers'
 
-- Run these commands below to complete the setup
-```
+~~~
+Webkul\UpsShipping\Providers\UpsShippingServiceProvider::class
+~~~
+
+* Goto composer.json file and add following line under 'psr-4'
+
+~~~
+"Webkul\\UpsShipping\\": "packages/Webkul/UpsShipping/src"
+~~~
+
+* Run these commands below to complete the setup
+
+~~~
 composer dump-autoload
-```
+~~~
 
-```
+~~~
 php artisan route:cache
-php artisan optimize
+~~~
+
+~~~
+php artisan config:clear
+~~~
+
+~~~
 php artisan vendor:publish
-```
+
 -> Press 0 and then press enter to publish all assets and configurations.
+~~~
 
 > now execute the project on your specified domain.
