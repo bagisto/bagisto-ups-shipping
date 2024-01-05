@@ -9,7 +9,6 @@ use Webkul\Checkout\Repositories\CartAddressRepository as CartAddress;
 use Webkul\UpsShipping\Repositories\UpsRepository as UpsRepository;
 use Webkul\Core\Repositories\ChannelRepository as Channel;
 
-
 class ShippingMethodHelper
 {
     /**
@@ -37,7 +36,9 @@ class ShippingMethodHelper
      * Create a new controller instance.
      *
      * @param \Webkul\Checkout\Repositories\CartAddressRepository  $cartAddress;
+     * 
      * @param \Webkul\Core\Repositories\ChannelRepository $channel
+     * 
      * @param \Webkul\Shipping\Repositories\UpsRepository $upsRepository;
      */
     public function __construct(
@@ -46,19 +47,14 @@ class ShippingMethodHelper
        protected Channel $channel
     )
     {
-        $this->_config = request('_config');
-
-        $this->cartAddress = $cartAddress;
-
-        $this->upsRepository = $upsRepository;
-
-        $this->channel = $channel;
     }
 
     /**
      * display methods
      *
      * @return array
+     * 
+     * @param $address
     */
     public function getAllCartProducts($address)
     {
@@ -72,6 +68,7 @@ class ShippingMethodHelper
      *
      * @param string $wsdl
      * @param bool|int $trace
+     * @param $address
      * @return \SoapClient
      */
     protected function _createSoapClient($address)
@@ -86,33 +83,30 @@ class ShippingMethodHelper
 
         $adminCompany = $adminData->hostname;
 
-        if (! core()->getConfigData('sales.carriers.ups.ups_active'))
-        {
+        if (! core()->getConfigData('sales.carriers.ups.ups_active')){
 
             return false;
+
         } else {
             $status = true;
         }
 
-        if ($status) 
-        {
+        if ($status) {
             $sellerAdminData = $this->upsRepository->getSellerAdminData($cart->items()->get(), 'ups_postcode');
         }
 
         $sellerAdminServices = $allServices = [];
-        foreach ($sellerAdminData as $cartProduct) 
-        {
+
+        foreach ($sellerAdminData as $cartProduct) {
             $sellerAdminServices[0] = explode(",", core()->getConfigData('sales.carriers.ups.services'));
         }
 
-        foreach ($sellerAdminData as $cartProduct) 
-        {
+        foreach ($sellerAdminData as $cartProduct) {
             $weight = $this->getWeight($cartProduct->weight);
 
             $countryId = core()->getConfigData('sales.shipping.origin.country');
 
-            if (! isset($cartProduct->marketplace_seller_id)) 
-            {
+            if (! isset($cartProduct->marketplace_seller_id)) {
                 //if admin's product
                 $zoneInformation = core()->getConfigData('sales.shipping.origin.state');
                 $address1 = core()->getConfigData('sales.shipping.origin.address1');
@@ -145,8 +139,7 @@ class ShippingMethodHelper
             $shipment = $rateRequestXML->addChild ( 'Shipment' );
             $shipper = $shipment->addChild ( 'Shipper' );
 
-            if (! isset($cartProduct->marketplace_seller_id)) 
-            {
+            if (! isset($cartProduct->marketplace_seller_id)) {
 
                 $shipper->addChild ( "Name", $adminName );
                 $shipper->addChild ( "ShipperNumber", $shipperNumber );
@@ -172,12 +165,14 @@ class ShippingMethodHelper
             $shipToAddress = $shipTo->addChild ( 'Address' );
             $shipToAddress->addChild ( "AddressLine1", $address->address1 );
             $shipToAddress->addChild ( "City", $address->city );
-            if ($address->country == 'PR') 
-            {
+
+            if ($address->country == 'PR') {
+
                 $shipToAddress->addChild ( "PostalCode", '00'. $address->postcode );
             } else {
                 $shipToAddress->addChild ( "PostalCode", $address->postcode );
             }
+
             $shipToAddress->addChild ( "CountryCode", $address->country );
             $package = $shipment->addChild ( 'Package' );
             $packageType = $package->addChild ( 'PackagingType' );
@@ -206,6 +201,7 @@ class ShippingMethodHelper
                 "Cache-Control: no-cache",
                 "Pragma: no-cache",
                 ));
+
                 curl_setopt($ch, CURLOPT_POSTFIELDS,$requestXML);
 
                 $response = curl_exec($ch);
@@ -216,22 +212,21 @@ class ShippingMethodHelper
 
                 $upsServices = json_decode(json_encode($upsServiceArray));
 
-                if ( isset($cartProduct->marketplace_seller_id)) 
-                {
+                if ( isset($cartProduct->marketplace_seller_id)) {
                     $sellerId = $cartProduct->marketplace_seller_id;
+
                 } else {
                     $sellerId = 0;
                 }
 
-                if ($response) 
-                {
+                if ($response) {
+
                     if ( isset($upsServices->Response->ResponseStatusDescription)
-                        && $upsServices->Response->ResponseStatusDescription == 'Success') 
-                    {
-                        if ( isset($upsServices->RatedShipment)) 
-                        {
-                            foreach ($upsServices->RatedShipment as $services) 
-                            {
+                        && $upsServices->Response->ResponseStatusDescription == 'Success') {
+
+                        if ( isset($upsServices->RatedShipment)) {
+
+                            foreach ($upsServices->RatedShipment as $services) {
 
                                 $serviceCode = $services->Service->Code;
 
@@ -239,8 +234,7 @@ class ShippingMethodHelper
 
                                 $serviceName = $this->getServiceName($serviceCode);
 
-                                if ($matchResult) 
-                                {
+                                if ($matchResult) {
                                     $cartProductServices[$serviceName] = [
                                         'classId' => $serviceCode,
                                         'rate' => $services->RatedPackage->TotalCharges->MonetaryValue,
@@ -254,8 +248,7 @@ class ShippingMethodHelper
 
                             }
 
-                            if ( !empty($cartProductServices)) 
-                            {
+                            if ( !empty($cartProductServices)) {
                                 $allServices[] = $cartProductServices;
                             }
                         }
@@ -276,7 +269,9 @@ class ShippingMethodHelper
         if ( !empty($allServices) ) 
         {
             return $this->upsRepository->getCommonMethods($allServices);
+
         } else {
+
             return false;
         }
     }
@@ -308,13 +303,11 @@ class ShippingMethodHelper
             '85'    => 'Today Express',
             '86'    => 'Today Express Saver',
             '03'    => 'Ups Ground',
-
         ];
 
-        foreach ($mapServices as $key => $service) 
-        {
-            if ($key == $serviceCode) 
-            {
+        foreach ($mapServices as $key => $service){
+
+            if ($key == $serviceCode) {
                 return $service;
             }
         }
@@ -329,22 +322,21 @@ class ShippingMethodHelper
      **/
     public function getWeight($weight) 
     {
-
         $coreWeightUnit = strtoupper(core()->getConfigData('general.general.locale_options.weight_unit'));
 
         $upsWeightUnit = strtoupper(core()->getConfigData('sales.carriers.ups.weight_unit'));
 
         $convertedWeight = '';
 
-        if ($coreWeightUnit == 'LBS') 
-        {
-            if ($upsWeightUnit == 'LBS') 
-            {
+        if ($coreWeightUnit == 'LBS') {
+
+            if ($upsWeightUnit == 'LBS') {
+
                 $convertedWeight = $weight;
+
             } else {
                 //kgs to lbs
                 $convertedWeight = $weight/0.45359237;
-
             }
         } else {
             $convertedWeight = $weight/0.45359237;
@@ -360,16 +352,15 @@ class ShippingMethodHelper
      **/
     public function getErrorLog($errors) 
     {
+        foreach ($errors->Response->Error as $errorLog){
 
-        foreach ($errors->Response->Error as $errorLog)
-        {
             $exception[] = $errorLog->ErrorDescription;
         }
         
         $status = $errors->Response->ResponseStatusDescription;
         
-        if (gettype($errors->Response->Error) !== 'array') 
-        {
+        if (gettype($errors->Response->Error) !== 'array') {
+            
             $status = $errors->Response->Error->ErrorSeverity;
 
             $exception[] = $errors->Response->Error->ErrorDescription;

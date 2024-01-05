@@ -4,12 +4,9 @@ namespace Webkul\UpsShipping\Carriers;
 
 use Webkul\Checkout\Models\CartShippingRate;
 use Webkul\Shipping\Carriers\AbstractShipping;
+use Webkul\UpsShipping\Helpers\ShippingMethodHelper;
 use Webkul\Checkout\Facades\Cart;
 
-/**
- * Ups Shipping.
- *
- */
 class Ups extends AbstractShipping
 {
     /**
@@ -32,31 +29,30 @@ class Ups extends AbstractShipping
 
         $rates = [];
 
-        $shippingHelper = app('Webkul\UpsShipping\Helpers\ShippingMethodHelper');
+        $shippingHelper = app(ShippingMethodHelper::class);
 
         $cart = Cart::getCart();
         
         $address = $cart->shipping_address;
       
-        $data = $shippingHelper->getAllCartProducts($address);
+        $cartProducts = $shippingHelper->getAllCartProducts($address);
 
         $marketplaceShipping = session()->get('marketplace_shipping_rates');
 
-        if (! $this->isAvailable())
+        if (! $this->isAvailable()){
+
             return false;
+        }
+        if (isset ($cartProducts) && $cartProducts == true) {
 
-        if (isset ($data) && $data == true) 
-        {
-
-            foreach ($data as $key => $fedexServices) 
-            {
+            foreach ($cartProducts as $key => $fedexServices) {
                 $rate = 0;
                 $totalShippingCost = 0;
                 $upsMethod = $key;
                 $methodCode = $key;
 
-                foreach ($fedexServices as $methods => $upsRate) 
-                {
+                foreach ($fedexServices as $methods => $upsRate) {
+
                     $rate += $upsRate['rate'] * $upsRate['itemQuantity'];
                     $sellerId = $upsRate['marketplace_seller_id'];
 
@@ -67,12 +63,11 @@ class Ups extends AbstractShipping
                         'base_amount' => $itemShippingCost
                     ];
 
-                    if (isset ($rates[$key][$sellerId])) 
-                    {
+                    if (isset ($rates[$key][$sellerId])) {
                         $rates[$key][$sellerId] = [
-                                'amount' => core()->convertPrice($rates[$key][$sellerId]['amount'] + $itemShippingCost),
-                                'base_amount' => $rates[$key][$sellerId]['base_amount'] + $itemShippingCost
-                            ];
+                            'amount' => core()->convertPrice($rates[$key][$sellerId]['amount'] + $itemShippingCost),
+                            'base_amount' => $rates[$key][$sellerId]['base_amount'] + $itemShippingCost
+                        ];
                     }
 
                     $totalShippingCost += $itemShippingCost;
@@ -91,8 +86,8 @@ class Ups extends AbstractShipping
 
                 $marketplaceShippingRates = session()->get('marketplace_shipping_rates');
 
-                if (! is_array($marketplaceShipping)) 
-                {
+                if (! is_array($marketplaceShipping)) {
+
                     $marketplaceShippingRates['mpupsshipping'] = ['mpupsshipping' => $rates];
                     session()->put('marketplace_shipping_rates', $marketplaceShippingRates);
 
@@ -103,8 +98,8 @@ class Ups extends AbstractShipping
                 array_push($shippingMethods, $object);
             }
 
-            if (isset ($marketplaceFedexShipping)) 
-            {
+            if (isset ($marketplaceFedexShipping)) {
+
                 session()->put('marketplace_shipping_rates.mpupshipping', $marketplaceFedexShipping);
             }
 

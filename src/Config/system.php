@@ -13,13 +13,13 @@ return [
                 'type'          => 'text',
                 'validation'    => 'required',
                 'channel_based' => false,
-                'locale_based'  => true
+                'locale_based'  => true,
             ], [
                 'name'          => 'description',
                 'title'         => 'ups::app.admin.system.description',
                 'type'          => 'textarea',
                 'channel_based' => false,
-                'locale_based'  => true
+                'locale_based'  => true,
             ], [
                 'name'          => 'ups_active',
                 'title'         => 'ups::app.admin.system.status',
@@ -32,10 +32,10 @@ return [
                 'options'       => [
                     [
                         'title'     => 'Development',
-                        'value'     => 'DEVELOPMENT'
+                        'value'     => 'DEVELOPMENT',
                     ], [
                         'title'     => 'Live',
-                        'value'     => "LIVE"
+                        'value'     => "LIVE",
                     ]
                 ],
             ], [
@@ -44,27 +44,27 @@ return [
                 'type'          => 'text',
                 'validation'    => 'required',
                 'channel_based' => false,
-                'locale_based'  => true
+                'locale_based'  => true,
             ], [
                 'name'          => 'user_id',
                 'title'         => 'ups::app.admin.system.user-id',
                 'type'          => 'text',
                 'validation'    => 'required',
                 'channel_based' => false,
-                'locale_based'  => true
+                'locale_based'  => true,
             ], [
                 'name'          => 'password',
                 'title'         => 'ups::app.admin.system.password',
                 'type'          => 'password',
                 'validation'    => 'required',
                 'channel_based' => false,
-                'locale_based'  => true
+                'locale_based'  => true,
             ], [
                 'name'          => 'shipper_number',
                 'title'         => 'ups::app.admin.system.shipper',
                 'type'          => 'text',
                 'channel_based' => false,
-                'locale_based'  => true
+                'locale_based'  => true,
             ], [
                 'name'          => 'container',
                 'title'         => 'ups::app.admin.system.container',
@@ -78,16 +78,16 @@ return [
                         'value'     => '02',
                     ], [
                         'title'     => 'UPS Letter',
-                        'value'     => '01'
+                        'value'     => '01',
                     ], [
                         'title'     => 'UPS Tube',
-                        'value'     => '03'
+                        'value'     => '03',
                     ], [
                         'title'     => 'UPS Pak',
-                        'value'     => '04'
+                        'value'     => '04',
                     ], [
                         'title'     => 'UPS Express Box',
-                        'value'     => '21'
+                        'value'     => '21',
                     ],
                 ],
             ], [
@@ -118,38 +118,37 @@ return [
                         'value'     => '14',
                     ], [
                         'title'     => 'Next Day Air',
-                        'value'     => '01'
+                        'value'     => '01',
                     ], [
                         'title'     => 'Next Day Air Saver',
-                        'value'     => '13'
+                        'value'     => '13',
                     ], [
                         'title'     => '2nd Day Air AM',
-                        'value'     => '59'
+                        'value'     => '59',
                     ], [
                         'title'     => '2nd Day Air',
-                        'value'     => '02'
+                        'value'     => '02',
                     ], [
                         'title'     => '3 Day Select',
-                        'value'     => '12'
+                        'value'     => '12',
                     ], [
                         'title'     => 'Ups Ground',
-                        'value'     => '03'
+                        'value'     => '03',
                     ], [
                         'title'     => 'UPS Worldwide Express',
-                        'value'     => '07'
+                        'value'     => '07',
                     ], [
                         'title'     => 'UPS Worldwide Express Plus',
-                        'value'     => '54'
+                        'value'     => '54',
                     ], [
                         'title'     => 'UPS Worldwide Expedited',
-                        'value'     => '08'
+                        'value'     => '08',
                     ], [
                         'title'     => 'UPS World Wide Saver',
-                        'value'     => '65'
+                        'value'     => '65',
                     ],
-
                 ],
             ],
-        ]
+        ],
     ],
 ];
