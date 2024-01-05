@@ -61,6 +61,10 @@ class ShippingMethodHelper
      */
     protected function createSoapClient($address)
     {
+        if (! core()->getConfigData('sales.carriers.ups.ups_active')) {
+            return false;
+        }
+
         $cart = Cart::getCart();
 
         $defaultChannel = core()->getCurrentChannelCode();
@@ -70,11 +74,6 @@ class ShippingMethodHelper
         $adminName = $adminData->name;
 
         $adminCompany = $adminData->hostname;
-
-        if (! core()->getConfigData('sales.carriers.ups.ups_active')) {
-
-            return false;
-        }
 
         $sellerAdminData = $this->upsRepository->getSellerAdminData($cart->items()->get(), 'ups_postcode');
 
@@ -280,11 +279,11 @@ class ShippingMethodHelper
         ];
 
         foreach ($mapServices as $key => $service) {
-
             if ($key == $serviceCode) {
                 return $service;
             }
         }
+
         return $serviceCode;
     }
 
@@ -312,6 +311,7 @@ class ShippingMethodHelper
         } else {
             $convertedWeight = $weight/0.45359237;
         }
+
         return $convertedWeight;
     }
 

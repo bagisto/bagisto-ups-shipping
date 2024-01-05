@@ -13,7 +13,7 @@ class Ups extends AbstractShipping
      * Payment method code
      *
      * @var string
-    */
+     */
     protected $code  = 'ups';
 
     /**
@@ -37,9 +37,7 @@ class Ups extends AbstractShipping
 
         $marketplaceShipping = session()->get('marketplace_shipping_rates');
 
-        if (isset($cartProducts) 
-            && $cartProducts == true) {
-
+        if (isset($cartProducts)) {
             foreach ($cartProducts as $key => $fedexServices) {
                 $rate = $totalShippingCost = 0;
                 $upsMethod = $methodCode = $key;
