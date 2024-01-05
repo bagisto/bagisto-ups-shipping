@@ -12,13 +12,6 @@ use Webkul\Core\Repositories\ChannelRepository as Channel;
 class ShippingMethodHelper
 {
     /**
-     * Contains route related configuration
-     *
-     * @var array
-     */
-    protected $_config;
-
-    /**
      * RateServiceWsdl
      *
      * @var string
@@ -36,9 +29,7 @@ class ShippingMethodHelper
      * Create a new controller instance.
      *
      * @param \Webkul\Checkout\Repositories\CartAddressRepository  $cartAddress;
-     * 
      * @param \Webkul\Core\Repositories\ChannelRepository $channel
-     * 
      * @param \Webkul\Shipping\Repositories\UpsRepository $upsRepository;
      */
     public function __construct(
@@ -50,28 +41,25 @@ class ShippingMethodHelper
     }
 
     /**
-     * display methods
+     * display cart products
      *
-     * @return array
-     * 
      * @param $address
+     * 
+     * @return array
     */
     public function getAllCartProducts($address)
     {
-        $data = $this->_createSoapClient($address);
-
-        return $data;
+        return $this->createSoapClient($address);
     }
 
     /**
      * Soap client for wsdl
      *
-     * @param string $wsdl
-     * @param bool|int $trace
      * @param $address
+     * 
      * @return \SoapClient
      */
-    protected function _createSoapClient($address)
+    protected function createSoapClient($address)
     {
         $cart = Cart::getCart();
 
@@ -83,17 +71,12 @@ class ShippingMethodHelper
 
         $adminCompany = $adminData->hostname;
 
-        if (! core()->getConfigData('sales.carriers.ups.ups_active')){
+        if (! core()->getConfigData('sales.carriers.ups.ups_active')) {
 
             return false;
-
-        } else {
-            $status = true;
         }
 
-        if ($status) {
-            $sellerAdminData = $this->upsRepository->getSellerAdminData($cart->items()->get(), 'ups_postcode');
-        }
+        $sellerAdminData = $this->upsRepository->getSellerAdminData($cart->items()->get(), 'ups_postcode');
 
         $sellerAdminServices = $allServices = [];
 
@@ -167,8 +150,8 @@ class ShippingMethodHelper
             $shipToAddress->addChild ( "City", $address->city );
 
             if ($address->country == 'PR') {
-
                 $shipToAddress->addChild ( "PostalCode", '00'. $address->postcode );
+
             } else {
                 $shipToAddress->addChild ( "PostalCode", $address->postcode );
             }
@@ -203,7 +186,7 @@ class ShippingMethodHelper
                 ));
 
                 curl_setopt($ch, CURLOPT_POSTFIELDS,$requestXML);
-
+                 
                 $response = curl_exec($ch);
 
                 curl_close($ch);
@@ -212,22 +195,19 @@ class ShippingMethodHelper
 
                 $upsServices = json_decode(json_encode($upsServiceArray));
 
-                if ( isset($cartProduct->marketplace_seller_id)) {
+                if (isset($cartProduct->marketplace_seller_id)) {
                     $sellerId = $cartProduct->marketplace_seller_id;
-
                 } else {
                     $sellerId = 0;
                 }
 
                 if ($response) {
-
-                    if ( isset($upsServices->Response->ResponseStatusDescription)
+                    if (isset($upsServices->Response->ResponseStatusDescription)
                         && $upsServices->Response->ResponseStatusDescription == 'Success') {
 
-                        if ( isset($upsServices->RatedShipment)) {
+                        if (isset($upsServices->RatedShipment)) {
 
                             foreach ($upsServices->RatedShipment as $services) {
-
                                 $serviceCode = $services->Service->Code;
 
                                 $matchResult = $this->upsRepository->validateAllowedMethods($serviceCode, $sellerAdminServices);
@@ -236,19 +216,19 @@ class ShippingMethodHelper
 
                                 if ($matchResult) {
                                     $cartProductServices[$serviceName] = [
-                                        'classId' => $serviceCode,
-                                        'rate' => $services->RatedPackage->TotalCharges->MonetaryValue,
-                                        'currency' => $services->RatedPackage->TotalCharges->CurrencyCode,
-                                        'weight' => $services->BillingWeight->Weight,
-                                        'weightUnit' => $services->BillingWeight->UnitOfMeasurement->Code,
+                                        'classId'               => $serviceCode,
+                                        'rate'                  => $services->RatedPackage->TotalCharges->MonetaryValue,
+                                        'currency'              => $services->RatedPackage->TotalCharges->CurrencyCode,
+                                        'weight'                => $services->BillingWeight->Weight,
+                                        'weightUnit'            => $services->BillingWeight->UnitOfMeasurement->Code,
                                         'marketplace_seller_id' => $sellerId,
-                                        'itemQuantity' => $cartProduct->quantity
+                                        'itemQuantity'          => $cartProduct->quantity,
                                     ];
                                 }
 
                             }
 
-                            if ( !empty($cartProductServices)) {
+                            if (! empty($cartProductServices)) {
                                 $allServices[] = $cartProductServices;
                             }
                         }
@@ -256,26 +236,20 @@ class ShippingMethodHelper
                     } else {
                         $errorLog = $this->getErrorLog($upsServices);
                         
-                        return false;
-                        //to check the error generated in the method;
+                        return false; //to check the error generated in the method;
                     }
                 }
             } catch (\Exception $e) {
-
                 return false;
             }
         }
 
-        if ( !empty($allServices) ) 
-        {
+        if (! empty($allServices) ) {
             return $this->upsRepository->getCommonMethods($allServices);
-
         } else {
-
             return false;
         }
     }
-
 
     /**
      * Map service code
@@ -305,13 +279,12 @@ class ShippingMethodHelper
             '03'    => 'Ups Ground',
         ];
 
-        foreach ($mapServices as $key => $service){
+        foreach ($mapServices as $key => $service) {
 
             if ($key == $serviceCode) {
                 return $service;
             }
         }
-
         return $serviceCode;
     }
 
@@ -331,9 +304,7 @@ class ShippingMethodHelper
         if ($coreWeightUnit == 'LBS') {
 
             if ($upsWeightUnit == 'LBS') {
-
                 $convertedWeight = $weight;
-
             } else {
                 //kgs to lbs
                 $convertedWeight = $weight/0.45359237;
@@ -341,7 +312,6 @@ class ShippingMethodHelper
         } else {
             $convertedWeight = $weight/0.45359237;
         }
-
         return $convertedWeight;
     }
 
@@ -352,15 +322,13 @@ class ShippingMethodHelper
      **/
     public function getErrorLog($errors) 
     {
-        foreach ($errors->Response->Error as $errorLog){
-
+        foreach ($errors->Response->Error as $errorLog) {
             $exception[] = $errorLog->ErrorDescription;
         }
         
         $status = $errors->Response->ResponseStatusDescription;
         
-        if (gettype($errors->Response->Error) !== 'array') {
-            
+        if (gettype($errors->Response->Error) !== 'array') {  
             $status = $errors->Response->Error->ErrorSeverity;
 
             $exception[] = $errors->Response->Error->ErrorDescription;

@@ -19,5 +19,5 @@ return [
             'size'                  => 'Grootte',
             'allowed-methods'       => 'Toegestane Diensten',
         ],
-    ]
+    ],
 ];

@@ -19,5 +19,5 @@ return [
             'size'                  => '尺寸',
             'allowed-methods'       => '允许的服务',
         ],
-    ]
+    ],
 ];

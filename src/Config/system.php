@@ -36,7 +36,7 @@ return [
                     ], [
                         'title'     => 'Live',
                         'value'     => "LIVE",
-                    ]
+                    ],
                 ],
             ], [
                 'name'          => 'access_license_key',
@@ -104,7 +104,7 @@ return [
                     ], [
                         'title'     => 'KGS',
                         'value'     => 'KGS',
-                    ]
+                    ],
                 ],
             ], [
                 'name'          => 'services',

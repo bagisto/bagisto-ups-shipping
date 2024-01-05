@@ -19,5 +19,5 @@ return [
             'size'                  => 'Boyut',
             'allowed-methods'       => 'İzin Verilen Hizmetler',
         ],
-    ]
+    ],
 ];

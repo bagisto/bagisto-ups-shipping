@@ -19,5 +19,5 @@ return [
             'size'                  => 'Tamaño',
             'allowed-methods'       => 'Servicios permitidos',
         ],
-    ]
+    ],
 ];

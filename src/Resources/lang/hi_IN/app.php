@@ -19,5 +19,5 @@ return [
             'size'                  => 'आकार',
             'allowed-methods'       => 'अनुमत सेवाएं',
         ],
-    ]
+    ],
 ];
