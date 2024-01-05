@@ -2,12 +2,6 @@
 
 namespace Webkul\UpsShipping\Repositories;
 
-/**
- * UPS Reposotory
- *
- * @author    Naresh Verma <naresh.verma327@webkul.com>
- * @copyright 2019 Webkul Software Pvt Ltd (http://www.webkul.com)
- */
 class UpsRepository
 {
     /**
@@ -17,40 +11,49 @@ class UpsRepository
      */
     protected $productRepository;
 
-
     /**
      * Get the Admin Product
      *
+     * @param $cartItems
+     * 
      * @return mixed
      */
-    public function getSellerAdminData($cartItems) {
+    public function getSellerAdminData($cartItems) 
+    {
         $adminProducts = [];
+
         foreach ($cartItems as $item) {
             array_push($adminProducts, $item);
         }
+
         return $adminProducts;
     }
 
     /**
      * Get the Allowde Services
      * @param $allowedServices
+     * @param $service
+     * 
      * @return $secvices
      */
     public function validateAllowedMethods($service, $allowedServices)
     {
         $count = 0;
+
         $totalCount = count($allowedServices);
 
         foreach ($allowedServices as $methods) {
+
             if ( in_array($service, $methods) ) {
                 $count += 1;
             }
         }
         if ( $count == $totalCount ) {
+
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -80,20 +83,16 @@ class UpsRepository
 
             if ($allowedMethod == null) {
                 continue;
-            } else {
-                $allowedMethods[] = $allowedMethod;
             }
-
+            $allowedMethods[] = $allowedMethod;
         }
 
         if (isset($allowedMethods)) {
-
             return $this->getCommonMethods($allowedMethods);
-        } else {
-            return false;
         }
-    }
 
+        return false;   
+    }
 
     /**
      * get the Common method
@@ -102,10 +101,10 @@ class UpsRepository
      */
     public function getCommonMethods($methods)
     {
-        $avilableServicesArray  = []; 
-        $countMethods           = count($methods);
+        $countMethods = count($methods);
 
         foreach ($methods as $fedexMethods) {
+
             foreach ($fedexMethods as $key => $fedexMethod) {
                 $avilableServicesArray[] = $key;
             }
@@ -117,24 +116,24 @@ class UpsRepository
         foreach ($countServices as $serviceType => $servicesCount) {
 
             foreach ($methods as $fedexMethods) {
-                foreach ($fedexMethods as $type => $fedexMethod) {
-                    if ($serviceType == $type && $servicesCount == $countMethods) {
 
+                foreach ($fedexMethods as $type => $fedexMethod) {
+
+                    if ($serviceType == $type && $servicesCount == $countMethods) {
                         $finalServices[$serviceType][] =$fedexMethod;
                     }
                 }
             }
-
             if ($finalServices == null) {
                 continue;
             }
         }
 
-        if (!empty($finalServices)) {
-            return $finalServices;
-        } else {
+        if (empty($finalServices)) {
             return false;
         }
+
+        return $finalServices;
     }
 }
 

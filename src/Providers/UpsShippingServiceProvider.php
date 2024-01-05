@@ -14,7 +14,11 @@ class UpsShippingServiceProvider extends ServiceProvider
      */
     public function boot(Router $router)
     {
+        $this->loadMigrationsFrom(__DIR__ . '/../Database/Migrations');
+
         $this->loadTranslationsFrom(__DIR__ . '/../Resources/lang', 'ups');
+
+        $this->loadViewsFrom(__DIR__ . '/../Resources/views', 'ups');
     }
 
     /**
